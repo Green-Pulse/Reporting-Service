@@ -7,9 +7,7 @@ It fetches historical weather data from Redis (collected by the Data Ingestion S
 
 ## Features
 
--
--
--    Weekly report generation based on stored weather data
+-  Weekly report generation based on stored weather data
 -  Reads from Redis using `weather-data:{city}:{timestamp}` key pattern
 -  PDF generation using [Apache PDFBox](https://pdfbox.apache.org/)
 -  Easily integratable with notification/email services (e.g., send report every week)
