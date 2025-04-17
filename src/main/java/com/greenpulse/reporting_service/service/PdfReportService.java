@@ -1,5 +1,7 @@
 package com.greenpulse.reporting_service.service;
 
+import com.greenpulse.reporting_service.dto.WeeklyWeatherSensorData;
+import com.greenpulse.reporting_service.model.SensorDataEvent;
 import com.greenpulse.reporting_service.model.WeatherDataEvent;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -16,23 +18,39 @@ import java.util.List;
 @Service
 public class PdfReportService {
 
-    public void generateReport(List<WeatherDataEvent> events, String city) throws IOException {
+    public void generateReport(WeeklyWeatherSensorData data, String city) throws IOException {
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
         document.addPage(page);
 
         try (PDPageContentStream content = new PDPageContentStream(document, page)) {
             content.beginText();
-            content.setFont(PDType1Font.HELVETICA, 12);
-            content.setLeading(14.5f);
+            content.setFont(PDType1Font.HELVETICA_BOLD, 14);
+            content.setLeading(16f);
             content.newLineAtOffset(50, 750);
-            content.showText("Weekly Weather Report for " + city);
+            content.showText("Weekly Weather & Sensor Report for " + city);
             content.newLine();
             content.newLine();
 
-            for (WeatherDataEvent event : events) {
-                String line = event.getTimestamp() + " | Temp: " + event.getTemperature() + "°C | Humidity: " + event.getHumidity() + "%";
-                content.showText(line);
+            content.setFont(PDType1Font.HELVETICA, 12);
+            content.showText("Weather Data:");
+            content.newLine();
+
+            for (WeatherDataEvent event : data.getWeatherEvents()) {
+                content.showText(event.getTimestamp() + " | Temp: " + event.getTemperature() + "°C | Humidity: " + event.getHumidity() + "%");
+                content.newLine();
+            }
+
+            content.newLine();
+            content.setFont(PDType1Font.HELVETICA, 12);
+            content.showText("Sensor Data:");
+            content.newLine();
+
+            for (SensorDataEvent event : data.getSensorEvents()) {
+                content.showText(String.format("%s | Temp: %.1f | Pres: %.1f | Dewp: %.1f | Rain: %.1f | WS: %.1f | NE: %b | NW: %b | SE: %b",
+                        event.getTimestamp(), event.getTemp(), event.getPres(), event.getDewp(),
+                        event.getRain(), event.getWindSpeed(),
+                        event.isWd_NE(), event.isWd_NW(), event.isWd_SE()));
                 content.newLine();
             }
 

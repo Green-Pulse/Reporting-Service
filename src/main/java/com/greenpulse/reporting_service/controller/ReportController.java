@@ -1,5 +1,6 @@
 package com.greenpulse.reporting_service.controller;
 
+import com.greenpulse.reporting_service.dto.WeeklyWeatherSensorData;
 import com.greenpulse.reporting_service.model.WeatherDataEvent;
 import com.greenpulse.reporting_service.service.PdfReportService;
 import com.greenpulse.reporting_service.service.RedisWeatherService;
@@ -22,10 +23,11 @@ public class ReportController {
     private final RedisWeatherService redisWeatherService;
     private final PdfReportService pdfReportService;
 
+
     @GetMapping("/weekly/{city}")
     public ResponseEntity<String> generateReport(@PathVariable String city) {
         try {
-            List<WeatherDataEvent> data = redisWeatherService.getEventsLastWeek(city);
+            WeeklyWeatherSensorData data = redisWeatherService.getWeatherAndSensorEvents(city);
             pdfReportService.generateReport(data, city);
             return ResponseEntity.ok("Report generated successfully.");
         } catch (Exception e) {
@@ -34,13 +36,13 @@ public class ReportController {
         }
     }
 
-    //TODO кажись лучше в другую папку
+    //TODO
 //    @Scheduled(cron = "0 0 12 * * SUN") // каждое воскресенье в 12:00
 //    public void generateWeeklyReports() throws IOException {
-//        List<String> cities = List.of("Baku"); // можно позже брать из конфига
+//        List<String> cities = List.of("Baku"); // Можно вынести в конфиг
 //        for (String city : cities) {
-//            List<WeatherDataEvent> events = redisWeatherService.getEventsLastWeek(city);
-//            pdfReportService.generateReport(events, city);
+//            WeeklyWeatherSensorData data = redisWeatherService.getWeatherAndSensorEvents(city);
+//            pdfReportService.generateReport(data, city);
 //        }
 //    }
 }
