@@ -7,6 +7,7 @@ import com.greenpulse.reporting_service.service.RedisWeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class ReportController {
 
 
     @GetMapping("/weekly/{city}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<String> generateReport(@PathVariable String city) {
         try {
             WeeklyWeatherSensorData data = redisWeatherService.getWeatherAndSensorEvents(city);
