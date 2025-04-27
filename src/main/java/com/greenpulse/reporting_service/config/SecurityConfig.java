@@ -27,4 +27,10 @@ public class SecurityConfig {
                 );
         return http.build();
     }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return JwtDecoders.fromIssuerLocation("http://keycloak:8080/realms/greenpulse");
+    }
+
 }
