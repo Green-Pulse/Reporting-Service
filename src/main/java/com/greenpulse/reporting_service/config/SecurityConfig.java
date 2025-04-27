@@ -27,10 +27,4 @@ public class SecurityConfig {
                 );
         return http.build();
     }
-
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation("http://localhost:8180/realms/greenpulse");
-    }
-
 }
